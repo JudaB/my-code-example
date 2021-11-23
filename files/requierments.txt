@@ -1,0 +1,3 @@
+#Requiered python library use the latest without specify the version
+ramapi
+flask

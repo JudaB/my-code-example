@@ -1,0 +1,13 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-deployment-service
+spec:
+  type: NodePort
+  selector:
+    app: rick_and_marty_web
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30007
