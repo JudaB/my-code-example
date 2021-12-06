@@ -75,7 +75,6 @@ fi
 }
 
 
-set -x
 
 # Main
 docker_build
