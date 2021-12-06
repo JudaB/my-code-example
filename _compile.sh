@@ -11,8 +11,8 @@
 #
 
 IMAGE="judab/my-docker-example"
-QUITE_COMPILE=TRUE
 QUITE_COMPILE=FALSE
+
 
 
 
@@ -38,11 +38,11 @@ fi
 
 docker_unitest () {
 # Unitest
-AA=$(docker run -td docker.io/judab/my-docker-example:latest)
+CONTAINER_ID=$(docker run -td docker.io/${IMAGE}:latest)
 sleep 10
-docker logs $AA  | grep  "Running on" >/dev/null 2>&1
+docker logs $CONTAINER_ID  | grep  "Running on" >/dev/null 2>&1
 RT=$?
-docker stop $AA
+docker stop $CONTAINER_ID
 
 echo "MY RT: $RT"
 #> /dev/null
@@ -67,14 +67,12 @@ else
 fi
 
 if [[ $? -ne 0 ]] ; then 
-    cat ${TMPFILE}
     echo "[ERROR]: Docker Push Failed"
     exit 2
 else 
     echo "[INFO]: Docker Push ${IMAGE}:${TAG} Pass sucessfully"
 fi
 }
-
 
 
 
