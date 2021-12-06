@@ -21,7 +21,22 @@
 #                                 |
 ##################################################
 
-Install methods:
+
+Compile:
+Use compile script in order to pack the code into docker container
+
+./_compile.sh
+judab@judab-VirtualBox:~/git/x/my-code-example$ ./_compile.sh
+[INFO]: Docker Build to judab/my-docker-example Pass sucessfully
+ee57f1553dac8748337fc4cf66740216581a832f39f512b0167d841c7143eef0
+MY RT: 0
+[INFO]: Docker unitest  to judab/my-docker-example Pass sucessfully
+[INFO]: Docker Push judab/my-docker-example:211206-10.58 Pass sucessfully
+
+Once   the compilation pass sucessfully   the TAG will have date filed in it see ABOVE EXAMPLE  211206-10.58
+
+
+Run methods:
 
 a. docker version
    --------------
