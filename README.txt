@@ -4,8 +4,8 @@
 # Description                     |  path 
 ###################################################
 #                                 |
-# 1.Application Rampi             |   files/rampi.py
-#                                 |
+# 1.Python Rick And Marty         |   files/rampi.py
+#    webserver                    |
 #                                 |
 #                                 |
 # 2. Compilation script will      |
