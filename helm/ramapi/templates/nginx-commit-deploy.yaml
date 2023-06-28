@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-commit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-commit-web
+  template:
+    metadata:
+      labels:
+        app: nginx-commit-web
+    spec:
+      containers:
+        - image: docker.io/judab/nginx-commit:230628-11.53
+          resources:
+            limits:
+              memory: "0.5Gi"
+              cpu: "1"
+          name: nginx-app-container
+          ports:
+            - containerPort: 5000
+
