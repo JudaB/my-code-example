@@ -1,4 +1,3 @@
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -11,3 +10,41 @@ spec:
       port: 80
       targetPort: 80
   type: LoadBalancer
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-commit-nport
+spec:
+  selector:
+    app: nginx-commit-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-commit-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:298141057963:certificate/b501a067-a081-458c-907a-d7182a726557
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nginx-commit-nport
+              port:
+                number: 80
