@@ -1,5 +1,6 @@
 
 // Empty Pipeline
+def App 
 
 pipeline {
     agent any 
@@ -33,7 +34,7 @@ pipeline {
             steps {
                 script {
                         echo 'Compile the source code' 
-                        docker.build("test-image","container/ubuntu")
+                        app = docker.build("test-image","container/ubuntu")
                         
                 }
             }//steps
