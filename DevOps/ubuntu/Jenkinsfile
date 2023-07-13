@@ -37,7 +37,7 @@ pipeline {
                         echo 'Compile the source code' 
                         // #app = docker.build("test-image","container/ubuntu")
                         sh ' ls -la '
-                        sh ' cd container/ubuntu/;docker build -t test-image . '
+                        sh ' cd container/ubuntu/;docker build -t judab  . ;sleep 3600 '
                 }
             }//steps
         }
