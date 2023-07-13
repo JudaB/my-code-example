@@ -31,12 +31,15 @@ stage('checkout') {
        
 stage('DockerBuild') {
     steps {
+                script {
                         echo 'Compile the source code' 
-                        app = docker.build("DevOps/ubuntu/hellonode")
+                        def app = docker.build(""test-image", DevOps/ubuntu/Jenkinsfile")
+                }
+                        
 
                 
-                }//steps
-            }// Execute TerraForm
+    }//steps
+
 
 
 
