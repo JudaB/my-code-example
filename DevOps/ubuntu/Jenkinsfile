@@ -4,9 +4,9 @@
 pipeline {
     agent any 
 
-    environment {
+    //environment {
         // Environment Variables to Add 
-    }
+    //}
 
     options {
         timestamps ()
@@ -14,14 +14,12 @@ pipeline {
     }
 
 
-    parameters {
+    // parameters {
         // Example of String 
         // string (name:'param_name', defaultValue: 'xx', description:'description')
         // Example of Choice
-        // choice(name: 'param_name', choices: ['false', 'true'], description: 'description')
-
-        
-    }
+        // choice(name: 'param_name', choices: ['false', 'true'], description: 'description')  
+    //}
     stages {
 
 stage('checkout') {
