@@ -33,7 +33,7 @@ stage('DockerBuild') {
     steps {
                 script {
                         echo 'Compile the source code' 
-                        def app = docker.build(""test-image", DevOps/ubuntu/Jenkinsfile")
+                        def app = docker.build("test-image", "DevOps/ubuntu/Jenkinsfile")
                 }
                         
 
