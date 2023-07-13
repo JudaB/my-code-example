@@ -1,0 +1,69 @@
+
+// Empty Pipeline
+
+pipeline {
+    agent any 
+
+    environment {
+        // Environment Variables to Add 
+    }
+
+    options {
+        timestamps ()
+        timeout(time: 1, unit: 'HOURS')
+    }
+
+
+    parameters {
+        // Example of String 
+        // string (name:'param_name', defaultValue: 'xx', description:'description')
+        // Example of Choice
+        // choice(name: 'param_name', choices: ['false', 'true'], description: 'description')
+
+        
+    }
+    stages {
+
+stage('checkout') {
+                steps {
+
+                    git 'https://github.com/JudaB/my-code-example'
+                } //steps
+         } // Stage
+       
+stage('DockerBuild') {
+    steps {
+                
+                }//steps
+            }// Execute TerraForm
+
+
+
+stage('Compile') {
+            steps {
+                echo 'Compile the source code' 
+            }
+        }
+    } // Stages
+
+
+post {
+        failure {
+            echo 'TODO: Fail Handler'
+        }
+
+        success {
+            script {
+                    echo 'TODO: Send Email'
+                    
+                }//script
+        }
+
+        always {
+                    echo 'TBD: Always Handler'
+        }//always
+    }//post
+
+    
+
+}
