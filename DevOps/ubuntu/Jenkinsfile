@@ -25,7 +25,7 @@ pipeline {
 stage('checkout') {
                 steps {
 
-                    git 'https://github.com/JudaB/my-code-example'
+                    git branch: 'main', url: 'https://github.com/JudaB/my-code-example'
                 } //steps
          } // Stage
        
