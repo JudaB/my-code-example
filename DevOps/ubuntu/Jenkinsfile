@@ -22,26 +22,21 @@ pipeline {
     //}
     stages {
 
-stage('checkout') {
-                steps {
+        stage('checkout') {
+                        steps {
 
-                    git branch: 'main', url: 'https://github.com/JudaB/my-code-example'
-                } //steps
-         } // Stage
+                            git branch: 'main', url: 'https://github.com/JudaB/my-code-example'
+                        } //steps
+        } // Stage
        
-stage('DockerBuild') {
-    steps {
+        stage('DockerBuild') {
+            steps {
                 script {
                         echo 'Compile the source code' 
-                        def app = docker.build("test-image", "DevOps/ubuntu/Jenkinsfile")
-                }
                         
-
-                
-    }//steps
-
-
-
+                }
+            }//steps
+        }
 
     } // Stages
 
