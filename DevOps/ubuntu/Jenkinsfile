@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                         echo 'Compile the source code' 
-                        docker.build("test-image","container/ubuntu/Dockerfile")
+                        docker.build("test-image","container/ubuntu")
                         
                 }
             }//steps

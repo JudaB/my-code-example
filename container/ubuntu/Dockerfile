@@ -6,7 +6,7 @@ ENV VERSION=1.2.0
 
 # Install required packages
 RUN apt-get update \
-    && apt-get install -y python vim zip unzip
+    && apt-get install -y python3 vim zip unzip
 
 # Copy zip_job.py to /tmp folder
 COPY files/zip_job.py /tmp/
