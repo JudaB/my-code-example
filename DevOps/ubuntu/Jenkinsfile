@@ -31,6 +31,8 @@ stage('checkout') {
        
 stage('DockerBuild') {
     steps {
+                        echo 'Compile the source code' 
+
                 
                 }//steps
             }// Execute TerraForm
