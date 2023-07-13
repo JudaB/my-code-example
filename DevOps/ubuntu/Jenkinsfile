@@ -32,10 +32,10 @@ pipeline {
        
         stage('DockerBuild') {
             steps {
+                sleep 300 // seconds
                 script {
                         echo 'Compile the source code' 
                         app = docker.build("test-image","container/ubuntu")
-                        
                 }
             }//steps
         }
