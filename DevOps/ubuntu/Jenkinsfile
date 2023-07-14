@@ -3,7 +3,11 @@
 def App 
 
 pipeline {
-    agent any 
+
+    agent {
+        docker { image 'node:18.16.0-alpine' }
+    }
+
 
     //environment {
         // Environment Variables to Add 
@@ -36,8 +40,10 @@ pipeline {
                 script {
                         echo 'Compile the source code' 
                         // #app = docker.build("test-image","container/ubuntu")
+		        sh 'node --version'
+
                         sh ' ls -la '
-                        sh ' sleep 3600;cd container/ubuntu/;docker build -t judab  . ;sleep 3600 '
+                  //      sh ' sleep 3600;cd container/ubuntu/;docker build -t judab  . ;sleep 3600 '
                 }
             }//steps
         }
