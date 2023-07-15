@@ -5,7 +5,7 @@ def glblEnvVersion = "None"
 pipeline {
     agent {
         docker { 
-                image 'judab/jenkins-ubuntu-ssh-slave:230715-07.29' 
+                image 'judab/jenkins-ubuntu-ssh-slave:latest judab/jenkins-ubuntu-ssh-slave:230715-07.39' 
                 args '--privileged'
         }
     }
