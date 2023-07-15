@@ -16,7 +16,7 @@ node{
                 echo "[DEBUG]: ${glblEnvVersion}"
                 sh 'cp /tmp/zip_job.py .;ls -la'
                 // sh 'ls -la ;touch a_1.2.0.zip;chmod 0777 a_1.2.0.zip;python3 zip_job.py;ls -la'       
-                sh 'ls -la ;touch a_1.2.0.zip;chmod 0400 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+                // sh 'ls -la ;touch a_1.2.0.zip;chmod 0400 a_1.2.0.zip;python3 zip_job.py;ls -la'       
                 def server = Artifactory.server 'artifactory-oss'
                 def targetPath = "judabrepo/${glblEnvVersion}/"
                 echo "[DEBUG]: TargetPath ${targetPath}"
