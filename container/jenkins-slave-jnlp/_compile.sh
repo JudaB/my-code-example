@@ -9,7 +9,7 @@
 #                      or comment it out
 #
 
-IMAGE="judab/jenkins-slave"
+IMAGE="judab/jenkins-slave-jnlp"
 QUITE_COMPILE=FALSE
 
 

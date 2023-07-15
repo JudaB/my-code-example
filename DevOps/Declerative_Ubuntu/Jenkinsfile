@@ -1,0 +1,53 @@
+pipeline {
+    agent {
+        docker { 
+                image 'judab/jenkins-ubuntu-ssh-slave:230714-21.21' 
+                args '--privileged'
+        }
+    }
+    stages {
+        
+        stage('Build ZIP') {
+            steps {
+                    sh 'cp /tmp/zip_job.py .;ls -la'
+                    sh 'ls -la ;touch a_1.2.0.zip;chmod 0777 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+            }
+    } // Stage            
+
+        stage('Push Artifact') { 
+            steps {     
+                archiveArtifacts allowEmptyArchive: true, artifacts: '*.zip', followSymlinks: false, onlyIfSuccessful: true
+                rtUpload ( serverId: 'artifactory-oss',spec: '''{"files": [{"pattern": "*.zip","target": "judabrepo/froggy-files/"}]}''',)
+            }
+        }
+
+        stage('ReportState') { 
+            steps {     
+                echo "Report State"
+                script {
+                    def subject = "Job Status: ${currentBuild.result}"
+                    def body = "The job ${env.JOB_NAME} has completed with status: ${currentBuild.result}"
+            
+                    emailext (
+                        recipientProviders: [developers(), requestor()], 
+                        subject: subject,
+                        body: body
+                    )
+                }
+            }
+        }
+
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+                sh 'ls -la'
+
+            }
+        } // CleanUp
+        
+
+    } // Stages
+
+
+
+}
