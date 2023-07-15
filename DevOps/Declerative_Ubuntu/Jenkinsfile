@@ -1,7 +1,11 @@
+// All Rights Reserved JudaB(c) - 2023
+
+def glblEnvVersion = "None"
+
 pipeline {
     agent {
         docker { 
-                image 'judab/jenkins-ubuntu-ssh-slave:230714-21.21' 
+                image 'judab/jenkins-ubuntu-ssh-slave:230715-07.29' 
                 args '--privileged'
         }
     }
@@ -9,21 +13,43 @@ pipeline {
         
         stage('Build ZIP') {
             steps {
-                    sh 'cp /tmp/zip_job.py .;ls -la'
-                    sh 'ls -la ;touch a_1.2.0.zip;chmod 0777 a_1.2.0.zip;python3 zip_job.py;ls -la'       
-            }
-    } // Stage            
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        echo "[DEBUG]: ${glblEnvVersion}"
+                        script {
+                                // Accessing the environment variable from the container
+                                glblEnvVersion = sh(script: 'echo $VERSION', returnStdout: true).trim()
+                                // TODO: if Value is None then abort JOB
 
-        stage('Push Artifact') { 
-            steps {     
-                archiveArtifacts allowEmptyArchive: true, artifacts: '*.zip', followSymlinks: false, onlyIfSuccessful: true
-                rtUpload ( serverId: 'artifactory-oss',spec: '''{"files": [{"pattern": "*.zip","target": "judabrepo/froggy-files/"}]}''',)
+                        }
+                        echo "[DEBUG]: ${glblEnvVersion}"
+                        sh 'cp /tmp/zip_job.py .;ls -la'
+                        //
+                        // You have replace the line here to simulate failure of the python
+                        sh 'ls -la ;touch a_1.2.0.zip;chmod 0777 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+                        //sh 'ls -la ;touch a_1.2.0.zip;chmod 0400 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+                    }
             }
-        }
+        
+            post {
+                always { 
+                    archiveArtifacts allowEmptyArchive: true, artifacts: '*.zip', followSymlinks: false, onlyIfSuccessful: true
+                    script 
+                    {
+                        def targetPath = "judabrepo/${glblEnvVersion}/"
 
-        stage('ReportState') { 
-            steps {     
-                echo "Report State"
+                        echo "[DEBUG]: TargetPath ${targetPath}"
+                        echo """[DEBUG]: {"files": [{"pattern": "*.zip","target": "${targetPath}"}]}"""
+                        rtUpload ( serverId: 'artifactory-oss',spec: """{"files": [{"pattern": "*.zip","target": "${targetPath}"}]}""",)
+                    }
+                    cleanWs()
+                    sh 'ls -la'
+                    }
+                }            
+
+        } // Stage            
+    } // Stages
+       post { 
+        always { 
                 script {
                     def subject = "Job Status: ${currentBuild.result}"
                     def body = "The job ${env.JOB_NAME} has completed with status: ${currentBuild.result}"
@@ -32,22 +58,8 @@ pipeline {
                         recipientProviders: [developers(), requestor()], 
                         subject: subject,
                         body: body
-                    )
+                        )
                 }
             }
         }
-
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-                sh 'ls -la'
-
-            }
-        } // CleanUp
-        
-
-    } // Stages
-
-
-
 }
