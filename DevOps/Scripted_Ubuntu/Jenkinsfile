@@ -1,0 +1,59 @@
+node{
+
+    def glblEnvVersion = "None"
+
+    stage('Build') {
+        // Use a Docker image with the necessary build tools
+        currentBuild.result = "SUCCESS"
+
+        try {
+            docker.image('judab/jenkins-ubuntu-ssh-slave:230714-21.21').inside {
+                // Run build commands or scripts
+                sh 'ls -la'
+                sh 'echo $VERSION'
+                glblEnvVersion = sh (script: 'echo $VERSION', returnStdout: true).trim()
+                // // TODO: if Value is None then abort JOB
+                echo "[DEBUG]: ${glblEnvVersion}"
+                sh 'cp /tmp/zip_job.py .;ls -la'
+                // sh 'ls -la ;touch a_1.2.0.zip;chmod 0777 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+                sh 'ls -la ;touch a_1.2.0.zip;chmod 0400 a_1.2.0.zip;python3 zip_job.py;ls -la'       
+                def server = Artifactory.server 'artifactory-oss'
+                def targetPath = "judabrepo/${glblEnvVersion}/"
+                echo "[DEBUG]: TargetPath ${targetPath}"
+                echo """[DEBUG]: {"files": [{"pattern": "*.zip","target": "${targetPath}"}]}"""
+                def uploadSpec =  """{"files": [{"pattern": "*.zip","target": "${targetPath}"}]}"""
+                buildInfo2 = server.upload spec: uploadSpec
+                
+            } // Docker Inside
+        
+        } catch (err) {
+
+                currentBuild.result = "FAILURE"
+                
+
+
+                // throw err
+        } finally {
+        // Code to be executed regardless of success or failure
+        echo "Pipeline completed"
+        def subject = "Job Status: ${currentBuild.result}"
+        def body = "The job ${env.JOB_NAME} has completed with status: ${currentBuild.result}"
+            
+        emailext (
+                        recipientProviders: [developers(), requestor()], 
+                        subject: subject,
+                        body: body
+                        )
+
+    }//catch
+        
+
+
+
+    } // Stage
+    stage('cleanup'){
+        cleanWs()
+ 
+    }
+    
+}
