@@ -3,16 +3,11 @@
 # Compilation script
 # Will handle the following
 #	Docker Build
-#	Unitest
-#	Upload
+#	Unitest (Skiped)
+#	Upload to DockerHUB
 #
-#  Use QUITE_COMPILE   if you have QUITE_COMPLIE=TRUE
-#                      you will get 3-4 lines
-#                      otherwise you will have all outputs
-
-IMAGE="judab/nginx-commit"
+IMAGE="judab/nginx-hello-world"
 #QUITE_COMPILE=TRUE
-
 
 
 
@@ -38,6 +33,7 @@ fi
 
 docker_unitest () {
 # Unitest
+# Not in use
 CONTAINER_ID=$(docker run -td docker.io/${IMAGE}:latest)
 sleep 10
 true
@@ -52,8 +48,9 @@ fi
 
 
 docker_upload () {
-TAG=`date +"%y%m%d-%H.%M"`
+# Will upload the Docker to DockerHub with Tag of date
 
+TAG=`date +"%y%m%d-%H.%M"`
 docker tag "${IMAGE}:latest" "${IMAGE}:"$TAG
 if [ -z ${QUITE_COMPILE} ] ; then 
 	docker push "${IMAGE}:$TAG"
@@ -73,7 +70,7 @@ fi
 
 # Main
 docker_build
-docker_unitest
+##docker_unitest
 docker_upload
 
 

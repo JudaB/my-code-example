@@ -1,13 +1,12 @@
 # Default values for ramapi.
 # This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
-replicaCount: 1
+nginxHelloWorld:
+  enabled: true
+  image:  judab/nginx-hello-world:231204-23.03
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+rampi:
+  enabled: false
+  image: docker.io/judab/my-docker-example:211115-14.32
 
 

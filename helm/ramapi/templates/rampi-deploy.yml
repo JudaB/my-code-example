@@ -1,3 +1,4 @@
+{{- if .Values.rampi.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -14,7 +15,7 @@ spec:
         app: rick_and_marty_web
     spec:
       containers:
-        - image: docker.io/judab/my-docker-example:211115-14.32
+        - image: {{ .Values.rampi.image }} 
           resources:
             requests:
               memory: 200m
@@ -26,4 +27,4 @@ spec:
           name: my-app-container
           ports:
             - containerPort: 5000
-
+{{- end }}

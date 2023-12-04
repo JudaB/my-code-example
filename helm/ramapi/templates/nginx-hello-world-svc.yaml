@@ -1,10 +1,11 @@
+{{- if .Values.nginxHelloWorld.enabled }}
 kind: Service
 apiVersion: v1
 metadata:
-  name: nginx-commit-lb
+  name: nginx-hello-world-lb
 spec:
   selector:
-    app: nginx-commit-web
+    app: nginx-hello-world-web
   ports:
     - protocol: TCP
       port: 80
@@ -15,10 +16,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: nginx-commit-nport
+  name: nginx-hello-world-nport
 spec:
   selector:
-    app: nginx-commit-web
+    app: nginx-hello-world-web
   ports:
     - protocol: TCP
       port: 80
@@ -30,12 +31,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-commit-ingress
+  name: nginx-hello-world-ingress
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+#    alb.ingress.kubernetes.io/scheme: internet-facing
+#    alb.ingress.kubernetes.io/target-type: ip
     kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:298141057963:certificate/b501a067-a081-458c-907a-d7182a726557
+#    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:298141057963:certificate/b501a067-a081-458c-907a-d7182a726557
 spec:
   ingressClassName: alb
   rules:
@@ -45,6 +46,8 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: nginx-commit-nport
+              name: nginx-hello-world-nport
               port:
                 number: 80
+{{- end }}
+

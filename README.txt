@@ -1,87 +1,14 @@
-# Directory contain the following
-#
-#
-# Description                     |  path 
-###################################################
-#                                 |
-# 1.Python Rick And Marty         |   files/rampi.py
-#    webserver                    |
-#                                 |
-#                                 |
-# 2. Compilation script will      |
-# create the docker run unitest   |   ./_compile.sh
-# and upload to docker hub        |
-#                                 |
-#                                 |
-# 3. k8s deployment yaml +        |   ./k8s
-#        service yaml             |
-#                                 |
-#                                 |
-# 4. helm chart                   |   ./helm
-#                                 |
-##################################################
+Repo stracture:
 
+container/                       directory that contain different kind of containers
+eks/                             directory that contain terraform to launch EKS in AWS
+                                 and script for adding LB Controller
+helm/                            directory that contain helm chart that will be deploy in the kubernetes
 
-Compile:
-Use compile script in order to pack the code into docker container
+list of maintained images:
 
-./_compile.sh
-judab@judab-VirtualBox:~/git/x/my-code-example$ ./_compile.sh
-[INFO]: Docker Build to judab/my-docker-example Pass sucessfully
-ee57f1553dac8748337fc4cf66740216581a832f39f512b0167d841c7143eef0
-MY RT: 0
-[INFO]: Docker unitest  to judab/my-docker-example Pass sucessfully
-[INFO]: Docker Push judab/my-docker-example:211206-10.58 Pass sucessfully
+   - nginx-hello-world                nginx and hello world index.html
 
-Once   the compilation pass sucessfully   the TAG will have date filed in it see ABOVE EXAMPLE  211206-10.58
+   - rampi                            webserver in python runing with flax 
 
-
-Run methods:
-
-a. docker version
-   --------------
-   run the following command
-   on 1st termina execute:
-   docker run -p 5000:5000 -ti docker.io/judab/my-docker-example:211115-14.32
-
-   on 2nd terminal execute:
-   curl localhost:5000/ram
-
-
-b. on kubernetes:
-   --------------
-   cd k8s/yaml
-   kubectl apply -f deploy.yaml
-   kubectl apply -f svc.yaml
-
-
-
-c. kubernetes helm chart
-   cd helm
-   helm install rampai1 ./ramapi
-
-
-output example:
-curl x.x.x.x:30879/ram
-[
-  {
-    "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-    "location": "Citadel of Ricks",
-    "name": "Rick Sanchez"
-  },
-  {
-    "image": "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
-    "location": "Citadel of Ricks",
-    "name": "Morty Smith"
-  },
-  {
-    "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
-    "location": "Earth (Replacement Dimension)",
-    "name": "Summer Smith"
-  },
-  {
-    "image": "https://rickandmortyapi.com/api/character/avatar/4.jpeg",
-    "location": "Earth (Replacement Dimension)",
-
-
-d.
+(image is push to dockerhub)

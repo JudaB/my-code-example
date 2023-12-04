@@ -1,20 +1,21 @@
+{{- if .Values.nginxHelloWorld.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-commit
+  name: nginx-hello-world
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-commit-web
+      app: nginx-hello-world-web
   template:
     metadata:
       labels:
-        app: nginx-commit-web
+        app: nginx-hello-world-web
     spec:
       containers:
-        - image: docker.io/judab/nginx-commit:230628-11.53
+        - image: {{ .Values.nginxHelloWorld.image }}
           resources:
             requests:
               memory: 200m
@@ -25,4 +26,5 @@ spec:
           name: nginx-app-container
           ports:
             - containerPort: 5000
+{{- end }}
 
