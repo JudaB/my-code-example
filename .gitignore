@@ -2,3 +2,5 @@ eks/add_lb_controller/*.yaml
 eks/add_lb_controller/*.json
 .terraform/*
 .terraform*
+scripts/certificate.*
+scripts/private.key
