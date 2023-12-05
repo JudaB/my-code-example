@@ -4,6 +4,7 @@ container/                       directory that contain different kind of contai
 eks/                             directory that contain terraform to launch EKS in AWS
                                  and script for adding LB Controller
 helm/                            directory that contain helm chart that will be deploy in the kubernetes
+DevOps/                          jenkins scripts
 
 list of maintained images:
 
@@ -12,3 +13,5 @@ list of maintained images:
    - rampi                            webserver in python runing with flax 
 
 (image is push to dockerhub)
+
+

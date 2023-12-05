@@ -33,7 +33,7 @@ kind: Ingress
 metadata:
   name: nginx-hello-world-ingress
   annotations:
-#    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/scheme: internet-facing
 #    alb.ingress.kubernetes.io/target-type: ip
     kubernetes.io/ingress.class: alb
 #    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:298141057963:certificate/b501a067-a081-458c-907a-d7182a726557
