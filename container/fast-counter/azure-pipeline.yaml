@@ -105,27 +105,26 @@ stages:
             $(semVer)
             dev
 
-${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
-    - stage: deploy
-      jobs:
-      - deployment: DeployWeb
-        displayName: deploy Container
-        pool:
-          vmImage: 'Ubuntu-latest'
-        environment:
-          name: 'Test'
-          resourceName: ip-172-31-50-82
-          resourceType: virtualMachine
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-              - script: |
-                  w
-                  whoami
-                  echo 'Hello world'
-                  sudo docker ps -a
-                  sudo docker stop fast-counter_prod
-                  sudo docker pull judab/fastc-ounter:dev
-                  sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:dev
+- stage: deploy
+  jobs:
+  - deployment: DeployWeb
+    displayName: deploy Container
+    pool:
+      vmImage: 'Ubuntu-latest'
+    environment:
+      name: 'Test'
+      resourceName: ip-172-31-50-82
+      resourceType: virtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: |
+              w
+              whoami
+              echo 'Hello world'
+              sudo docker ps -a
+              sudo docker stop fast-counter_prod
+              sudo docker pull judab/fastc-ounter:dev
+              sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:dev
 
