@@ -41,7 +41,8 @@ stages:
     workspace:
       clean: resource
     variables:
-    - semVer: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.FullSemVer'] ]
+      semVer: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.FullSemVer'] ]
+      semVer2: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.FullSemVer'] ]
     steps:
     - checkout: self
       clean: true
