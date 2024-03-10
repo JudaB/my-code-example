@@ -43,7 +43,6 @@ stages:
       clean: resource
     variables:
       semVer: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.shortSha'] ]
-      semVer2: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.FullSemVer'] ]
     steps:
     - checkout: self
       clean: true
@@ -75,6 +74,7 @@ stages:
         #!/bin/bash
         # run the Docker localy and check that coutner is increased
         JOBNUM=`docker run -td -p 8000:8000 judab/fast-counter:dev`
+        # Allow docker few sec to start
         sleep 2
         previous_counter=`curl -s http://localhost:8000 | jq '.counter'`
         for ((i=0; i<4; i++)); do
@@ -84,10 +84,10 @@ stages:
             else
                 echo "Counter remains the same: $current_counter"
                 docker stop ${JOBNUM}
-                exit 1 # Exit with abort
+                exit 1 
             fi
             previous_counter=$current_counter
-            sleep 1  # Add a delay if needed\n
+            sleep 1  
         done
         docker stop ${JOBNUM}
       displayName: Preform unitest for container
@@ -120,16 +120,15 @@ stages:
       runOnce:
         deploy:
           steps:
+          # This is for testing purposes in real scenario
+          # i will prefer to use different environment  and not do this trick
           - script: |
-              w
               sudo docker ps -a
               sudo docker stop fast-counter_prod
               sudo docker pull judab/fastc-ounter:latest
               sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:latest
             condition: eq(variables.isMain, true)
 
-          # This is for testing purposes in real environment 
-          # i will prefer to use different environment 
           - script: |
               sudo docker ps -a
               sudo docker stop fast-counter_dev
