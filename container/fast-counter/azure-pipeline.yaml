@@ -1,62 +1,47 @@
 variables:
-  system.debug: 'false'
+  system.debug: 'true'
+
+pr:
+  - '*'
+
+trigger:
+  branches:
+    include:
+    - fast-counter
 
 pool:
-  name: default
+  name: Azure Pipelines
 
 stages:
+- stage: version
+  jobs:
+  - job: CalculateVersion
     displayName: Calculate Version
     steps:
     - checkout: self
       fetchDepth: 0
+       
     - task: UseDotNet@2
       inputs:
-        version: 3.x
+        version: 6.x
+
     - task: gitversion/setup@0
       displayName: Install GitVersion
       inputs:
         versionSpec: 5.x
 
-    - bash: |
-        cat <<EOF > $(Agent.TempDirectory)/gitversion.yml
-        major-version-bump-message: '\+semver:\s?(breaking|major)'
-        minor-version-bump-message: '\+semver:\s?(feature|minor)'
-        patch-version-bump-message: '\+semver:\s?(fix|patch)'
-        commit-message-incrementing: Enabled
-        no-bump-message: '\+semver:\s?(none|skip)'
-        mode: Mainline
-        branches:
-          master:
-            regex: ^master$|^main$
-            increment: patch
-            is-mainline: true
-            tag: ''
-          tasks:
-            regex: ^task.*$
-            source-branches:
-            - master
-
-        ignore:
-          sha: []
-        merge-message-formats: {}
-        EOF    
-
-      displayName: Create GitVersion config
     - task: gitversion/execute@0
-      displayName: Calculating version
-      name: Version
-      inputs:
-        useConfigFile: True
-        configFilePath: $(Agent.TempDirectory)/gitversion.yml
+      displayName: Determine Version
+      name: CalculateVersion
 
 - stage: dockerBuild
+  dependsOn: [ version ]
   jobs:
-  - job: dockerBuildBigCommerceApp
+  - job: dockerBuildfastCounter
     workspace:
       clean: resource
     variables:
-      semVer: $[ stageDependencies.build.CalculateVersion.outputs['Version.GitVersion.SemVer'] ]
-
+    - semVer: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.FullSemVer'] ]
     steps:
     - checkout: self
       clean: true
@@ -69,18 +54,66 @@ stages:
       displayName: Docker Login to GCR
 
     - task: Docker@2
-      displayName: Build and push docker image
+      displayName: Build Image
       inputs:
-        command: buildAndPush
-        
+        command: build
         repository: judab/fast-counter
         buildContext: ./container/fast-counter
-        Dockerfile: Dockerfile
-        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
-          tags: |
-            $(semVer)
-        ${{ else }}:
-          tags: |
-            $(semVer)
-            dev
+        Dockerfile: ./container/fast-counter/Dockerfile
+        tags: |
+          $(semVer)
+          dev
+
+    - script: |
+        #!/bin/bash
+        # run the Docker localy and check that coutner is increased
+        JOBNUM=`docker run -td -p 8000:8000 judab/fast-counter:dev`
+        sleep 2
+        previous_counter=`curl -s http://localhost:8000 | jq '.counter'`
+        for ((i=0; i<4; i++)); do
+            current_counter=$(curl -s http://localhost:8000 | jq -r '.counter')
+            if (( current_counter > previous_counter )); then
+                echo "Counter increased from $previous_counter to $current_counter"
+            else
+                echo "Counter remains the same: $current_counter"
+                docker stop ${JOBNUM}
+                exit 1 # Exit with abort
+            fi
+            previous_counter=$current_counter
+            sleep 1  # Add a delay if needed\n
+        done
+        docker stop ${JOBNUM}
+      displayName: Preform unitest for container
+
+    - task: Docker@2
+      displayName: push image to DockerHub
+      inputs:
+        command: push
+        repository: judab/fast-counter
+        tags: |
+          $(semVer)
+          dev
+
+- stage: deploy
+  jobs:
+  - deployment: DeployWeb
+    displayName: deploy Container
+    pool:
+      vmImage: 'Ubuntu-latest'
+    environment:
+      name: 'Test'
+      resourceName: ip-172-31-50-82
+      resourceType: virtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: |
+              w
+              whoami
+              echo 'Hello world'
+              sudo docker ps -a
+              sudo docker stop fast-counter_prod
+              sudo docker pull judab/fastc-ounter:dev
+              sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:dev
 
