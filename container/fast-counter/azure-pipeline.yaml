@@ -1,0 +1,86 @@
+variables:
+  system.debug: 'false'
+
+pool:
+  name: default
+
+stages:
+    displayName: Calculate Version
+    steps:
+    - checkout: self
+      fetchDepth: 0
+    - task: UseDotNet@2
+      inputs:
+        version: 3.x
+    - task: gitversion/setup@0
+      displayName: Install GitVersion
+      inputs:
+        versionSpec: 5.x
+
+    - bash: |
+        cat <<EOF > $(Agent.TempDirectory)/gitversion.yml
+        major-version-bump-message: '\+semver:\s?(breaking|major)'
+        minor-version-bump-message: '\+semver:\s?(feature|minor)'
+        patch-version-bump-message: '\+semver:\s?(fix|patch)'
+        commit-message-incrementing: Enabled
+        no-bump-message: '\+semver:\s?(none|skip)'
+        mode: Mainline
+        branches:
+          master:
+            regex: ^master$|^main$
+            increment: patch
+            is-mainline: true
+            tag: ''
+          tasks:
+            regex: ^task.*$
+            source-branches:
+            - master
+
+        ignore:
+          sha: []
+        merge-message-formats: {}
+        EOF    
+
+      displayName: Create GitVersion config
+    - task: gitversion/execute@0
+      displayName: Calculating version
+      name: Version
+      inputs:
+        useConfigFile: True
+        configFilePath: $(Agent.TempDirectory)/gitversion.yml
+
+- stage: dockerBuild
+  jobs:
+  - job: dockerBuildBigCommerceApp
+    workspace:
+      clean: resource
+    variables:
+      semVer: $[ stageDependencies.build.CalculateVersion.outputs['Version.GitVersion.SemVer'] ]
+
+    steps:
+    - checkout: self
+      clean: true
+      persistCredentials: true
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: judab_dockerhub
+        command: login
+      displayName: Docker Login to GCR
+
+    - task: Docker@2
+      displayName: Build and push docker image
+      inputs:
+        command: buildAndPush
+        
+        repository: judab/fast-counter
+        buildContext: ./container/fast-counter
+        Dockerfile: Dockerfile
+        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
+          tags: |
+            $(semVer)
+        ${{ else }}:
+          tags: |
+            $(semVer)
+            dev
+
