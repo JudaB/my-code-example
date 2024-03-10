@@ -1,5 +1,6 @@
 variables:
   system.debug: 'true'
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
 
 pr:
   - '*'
@@ -121,10 +122,20 @@ stages:
           steps:
           - script: |
               w
-              whoami
-              echo 'Hello world'
               sudo docker ps -a
               sudo docker stop fast-counter_prod
+              sudo docker pull judab/fastc-ounter:latest
+              sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:latest
+            condition: eq(variables.isMain, true)
+
+          # This is for testing purposes in real environment 
+          # i will prefer to use different environment 
+          - script: |
+              sudo docker ps -a
+              sudo docker stop fast-counter_dev
               sudo docker pull judab/fastc-ounter:dev
-              sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:dev
+              sudo docker run -td -p 81:8000 --name fast-counter_prod judab/fast-counter:dev
+            condition: eq(variables.isMain, false)            
+
+
 
