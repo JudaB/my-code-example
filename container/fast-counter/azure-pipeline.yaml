@@ -129,6 +129,8 @@ stages:
               sudo docker rm fast-counter_prod
               sudo docker pull judab/fast-counter:latest
               sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:latest
+              sleep 2
+              sudo docker ps -a              
             condition: eq(variables.isMain, true)
 
           - script: |
