@@ -79,6 +79,7 @@ stages:
         previous_counter=`curl -s http://localhost:8000 | jq '.counter'`
         for ((i=0; i<4; i++)); do
             current_counter=$(curl -s http://localhost:8000 | jq -r '.counter')
+            curl -X POST -s http://localhost:8000 
             if (( current_counter > previous_counter )); then
                 echo "Counter increased from $previous_counter to $current_counter"
             else
