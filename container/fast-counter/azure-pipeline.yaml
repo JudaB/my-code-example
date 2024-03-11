@@ -78,7 +78,7 @@ stages:
     - script: |
         #!/bin/bash
         # run the Docker localy and check that coutner is increased
-        JOBNUM=`docker run -td -p 8000:8000 judab/fast-counter:dev`
+        JOBNUM=`docker run -td -p 8000:8000 judab/fast-counter: $(semVer)`
         # Allow docker few sec to start
         sleep 2
         previous_counter=`curl -s http://localhost:8000 | jq '.counter'`
