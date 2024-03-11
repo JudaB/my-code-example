@@ -1,7 +1,7 @@
 variables:
   system.debug: 'true'
-  #isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/fast-counter')]
+  isMain: $[not(eq(variables['Build.SourceBranch'], 'refs/heads/main'))]
+  
 
 pr:
   - '*'
