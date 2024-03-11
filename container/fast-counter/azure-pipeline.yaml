@@ -126,6 +126,7 @@ stages:
           - script: |
               sudo docker ps -a
               sudo docker stop fast-counter_prod
+              sudo docker rm fast-counter_prod
               sudo docker pull judab/fast-counter:latest
               sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:latest
             condition: eq(variables.isMain, true)
@@ -133,6 +134,7 @@ stages:
           - script: |
               sudo docker ps -a
               sudo docker stop fast-counter_dev
+              sudo docker rm fast-counter_dev
               sudo docker pull judab/fast-counter:dev
               sudo docker run -td -p 81:8000 --name fast-counter_dev judab/fast-counter:dev
             condition: eq(variables.isMain, false)            
