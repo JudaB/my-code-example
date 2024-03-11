@@ -1,5 +1,6 @@
 variables:
   system.debug: 'true'
+  agent.diagnostic : True
   isMain: $[not(eq(variables['Build.SourceBranch'], 'refs/heads/main'))]
   
 
