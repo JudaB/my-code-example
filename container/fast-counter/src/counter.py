@@ -5,7 +5,7 @@ counter = 0
 
 @app.get("/")
 def read_root():
-    return {"Counter": counter}
+    return {"counter": counter}
 
 @app.post("/")
 def increment_counter():
