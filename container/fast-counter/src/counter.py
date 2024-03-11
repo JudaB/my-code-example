@@ -1,15 +1,17 @@
-from fastapi import FastAPI
-from typing import Dict
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
-
 counter = 0
 
 @app.get("/")
-async def get_counter() -> Dict[str, int]:
+def read_root():
+    return {"Counter": counter}
+
+@app.post("/")
+def increment_counter():
     global counter
     counter += 1
-    return {"counter": counter}
+    return {"message": "Counter incremented"}
 
 if __name__ == "__main__":
     import uvicorn
