@@ -61,7 +61,7 @@ stages:
         repository: judab/fast-counter
         buildContext: ./container/fast-counter
         Dockerfile: ./container/fast-counter/Dockerfile
-        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
+        ${{ if eq(variables.isMain, true) }}:
           tags: |
             $(semVer)
             latest
@@ -98,7 +98,7 @@ stages:
       inputs:
         command: push
         repository: judab/fast-counter
-        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
+        ${{ if eq(variables.isMain, true) }}:
           tags: |
             $(semVer)
             latest
