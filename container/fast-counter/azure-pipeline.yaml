@@ -1,6 +1,7 @@
 variables:
   system.debug: 'true'
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  #isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/fast-counter')]
 
 pr:
   - '*'
@@ -14,6 +15,10 @@ pool:
   name: Azure Pipelines
 
 stages:
+# in this stage i use extension to calculate versioning
+# https://marketplace.visualstudio.com/items?itemName=gittools.gittools
+# here i am just picking up the git SHA but it suport more robust options
+#
 - stage: version
   jobs:
   - job: CalculateVersion
