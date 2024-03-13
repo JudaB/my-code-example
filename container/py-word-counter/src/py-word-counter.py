@@ -25,6 +25,11 @@ def most_common_words(folder_path, n):
     most_common = word_counter.most_common(n)
     return most_common
 
+@app.get("/health-check")
+async def health_check():
+    return {"status": "OK"}
+
+
 @app.get("/most_common_words/{n}")
 async def get_most_common_words(n: int):
     folder_path = '../txt-files'

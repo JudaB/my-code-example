@@ -2,11 +2,18 @@
 # This is a YAML-formatted file.
 
 nginxHelloWorld:
-  enabled: true
+  enabled: false
   image:  judab/nginx-hello-world:231204-23.03
 
 rampi:
   enabled: false
   image: docker.io/judab/my-docker-example:211115-14.32
+  ingress:
+    enabled: false
 
-
+pyWordCounter:
+  enabled: true
+  image: judab/py-word-counter:240313-13.43
+  ingress:
+    enabled: true
+    host: "py-word-counter.local" # Default host value

@@ -1,0 +1,16 @@
+{{- if .Values.pyWordCounter.ingress.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: py-word-counter-ingress
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`{{ .Values.pyWordCounter.ingress.host }}`)
+      kind: Rule
+      services:
+        - name: py-word-counter
+          port: 8000
+{{- end }}

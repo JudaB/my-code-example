@@ -1,0 +1,28 @@
+{{- if .Values.pyWordCounter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: py-word-counter
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: py-word-counter
+  template:
+    metadata:
+      labels:
+        app: py-word-counter
+    spec:
+      containers:
+      - name: py-word-counter
+        image: {{ .Values.pyWordCounter.image }}
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+{{- end }}
