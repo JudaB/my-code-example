@@ -13,7 +13,7 @@ rampi:
 
 pyWordCounter:
   enabled: true
-  image: judab/py-word-counter:240313-13.43
+  image: judab/py-word-counter:240313-14.19
   ingress:
     enabled: true
     host: "py-word-counter.local" # Default host value

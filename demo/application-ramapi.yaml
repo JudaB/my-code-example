@@ -13,7 +13,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL:  https://judaB.github.io/my-code-example
+    repoURL: https://github.com/JudaB/my-code-example
     targetRevision: HEAD
     path: charts/ramapi
   syncPolicy:
@@ -22,5 +22,4 @@ spec:
       selfHeal: true
   destination:
     server: https://kubernetes.default.svc
-    namespace: guestbook
-
+    namespace: demo

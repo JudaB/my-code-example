@@ -37,7 +37,7 @@ install_or_update_binaries() {
 }
 
 create_k3d_cluster() {
-    k3d cluster create mycluster -p "8900:30080@agent:0" -p "8901:30081@agent:0" -p "8902:30082@agent:0" --agents 2
+    k3d cluster create mycluster -p "8082:80@loadbalancer" -p "8900:30080@agent:0" -p "8901:30081@agent:0" -p "8902:30082@agent:0" --agents 2
     # Check the return code of the k3d cluster creation command
     if [ $? -eq 0 ]; then
         echo "k3d cluster 'mycluster' created successfully."
@@ -82,17 +82,23 @@ install_argocd() {
         echo "Failed to install Argo CD."
         return 1
     fi
-    wait_for_deployments argocd
 }
 
 
 install_or_update_binaries
 create_k3d_cluster
+set -x
 install_argocd
+# wait for al deployments to be in Ready state
+sleep 5
+wait_for_deployments argocd
+
 # Add Application
-kubectl apply -f app.yaml -n argocd
+kubectl apply -f application-ramapi.yaml -n argocd
+sleep 5
 wait_for_deployments demo
 
+#echo "127.0.0.1 py-word-counter.local" | sudo tee -a /etc/hosts
 
 
 #kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -103,6 +109,6 @@ wait_for_deployments demo
 #argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://localhost:8080 --dest-namespace defaul
 #argocd app sync guestbook
 
-kubectl apply -f app.yaml -n argocd
+kubectl apply -f application-ramapi.yaml -n argocd
 
 
