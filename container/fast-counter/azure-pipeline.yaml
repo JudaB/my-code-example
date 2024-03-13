@@ -1,0 +1,154 @@
+variables:
+  system.debug: 'true'
+  agent.diagnostic : True
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  
+
+pr:
+  - '*'
+
+trigger:
+  branches:
+    include:
+    - main
+    - fast-counter
+
+pool:
+  name: Azure Pipelines
+
+stages:
+# in this stage i use extension to calculate versioning
+# https://marketplace.visualstudio.com/items?itemName=gittools.gittools
+# here i am just picking up the git SHA but it suport more robust options
+#
+- stage: version
+  jobs:
+  - job: CalculateVersion
+    displayName: Calculate Version
+    steps:
+    - checkout: self
+      fetchDepth: 0
+       
+    - task: UseDotNet@2
+      inputs:
+        version: 6.x
+
+    - task: gitversion/setup@0
+      displayName: Install GitVersion
+      inputs:
+        versionSpec: 5.x
+
+    - task: gitversion/execute@0
+      displayName: Determine Version
+      name: CalculateVersion
+
+- stage: dockerBuild
+  dependsOn: [ version ]
+  jobs:
+  - job: dockerBuildfastCounter
+    workspace:
+      clean: resource
+    variables:
+      semVer: $[ stageDependencies.version.CalculateVersion.outputs['CalculateVersion.GitVersion.shortSha'] ]
+    steps:
+    - checkout: self
+      clean: true
+      persistCredentials: true
+
+    - task: Docker@2
+      inputs:
+        containerRegistry: judab_dockerhub
+        command: login
+      displayName: Docker Login to GCR
+
+    - task: Docker@2
+      displayName: Build Image
+      inputs:
+        command: build
+        repository: judab/fast-counter
+        buildContext: ./container/fast-counter
+        Dockerfile: ./container/fast-counter/Dockerfile
+        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
+          tags: |
+            $(semVer)
+            latest
+        ${{ else }}:
+          tags: |
+            $(semVer)
+            dev
+
+    - script: |
+        #!/bin/bash
+        # run the Docker localy and check that coutner is increased
+        JOBNUM=`docker run -td -p 8000:8000 judab/fast-counter:$(semVer)`
+        # Allow docker few sec to start
+        sleep 2
+        previous_counter=`curl -s http://localhost:8000 | jq '.counter'`
+        for ((i=0; i<4; i++)); do
+            curl -X POST -s http://localhost:8000 
+            current_counter=$(curl -s http://localhost:8000 | jq -r '.counter')
+            if (( current_counter > previous_counter )); then
+                echo "Counter increased from $previous_counter to $current_counter"
+            else
+                echo "Counter remains the same: $current_counter"
+                docker stop ${JOBNUM}
+                exit 1 
+            fi
+            previous_counter=$current_counter
+            sleep 1  
+        done
+        docker stop ${JOBNUM}
+      displayName: Preform unitest for container
+
+    - task: Docker@2
+      displayName: push image to DockerHub
+      inputs:
+        command: push
+        repository: judab/fast-counter
+        ${{ if in(variables['Build.SourceBranchName'], 'master', 'main') }}:
+          tags: |
+            $(semVer)
+            latest
+        ${{ else }}:
+          tags: |
+            $(semVer)
+            dev
+
+- stage: deploy
+  jobs:
+  - deployment: DeployWeb
+    displayName: deploy Container
+    pool:
+      vmImage: 'Ubuntu-latest'
+    environment:
+      name: 'Test'
+      resourceName: ip-172-31-50-82
+      resourceType: virtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          # This is for testing purposes in real scenario
+          # i will prefer to use different environment  and not do this trick
+          - script: |
+              sudo docker ps -a
+              sudo docker stop fast-counter_prod || true
+              sudo docker rm fast-counter_prod 
+              sudo docker pull judab/fast-counter:latest
+              sudo docker run -td -p 80:8000 --name fast-counter_prod judab/fast-counter:latest
+              sleep 2
+              sudo docker ps -a              
+            condition: eq(variables.isMain, true)
+            displayName: Deploy to Prod
+
+          - script: |
+              sudo docker ps -a
+              sudo docker stop fast-counter_dev
+              sudo docker rm fast-counter_dev
+              sudo docker pull judab/fast-counter:dev
+              sudo docker run -td -p 81:8000 --name fast-counter_dev judab/fast-counter:dev
+            condition: eq(variables.isMain, false)            
+            displayName: Deploy to Dev
+
+
+
