@@ -91,7 +91,7 @@ create_k3d_cluster
 install_argocd
 # Add Application
 kubectl apply -f app.yaml -n argocd
-wait_for_deployments
+wait_for_deployments demo
 
 
 

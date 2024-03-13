@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: guestbook
+  name: demo
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook
+  name: demo
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io

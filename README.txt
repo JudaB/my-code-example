@@ -1,17 +1,14 @@
-Repo stracture:
+# My Code Example Repository
 
-container/                       directory that contain different kind of containers
-eks/                             directory that contain terraform to launch EKS in AWS
-                                 and script for adding LB Controller
-helm/                            directory that contain helm chart that will be deploy in the kubernetes
-DevOps/                          jenkins scripts
+This repository contains examples of code written in various programming languages and frameworks.
 
-list of maintained images:
+## Contents
 
-   - nginx-hello-world                nginx and hello world index.html
+- `python-word-counter`: A Python script that counts words in text files.
+- `javascript-calculator`: A simple calculator implemented in JavaScript.
+- `java-helloworld`: A basic "Hello, World!" program written in Java.
+- `docker-compose-example`: An example of using Docker Compose to orchestrate a multi-container application.
 
-   - rampi                            webserver in python runing with flax 
+## Usage
 
-(image is push to dockerhub)
-
-
+Each directory contains the source code and relevant files for the respective example. Detailed usage instructions can be found within each directory's README file.
