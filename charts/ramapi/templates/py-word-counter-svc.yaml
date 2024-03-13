@@ -24,6 +24,6 @@ spec:
     - match: Host(`{{ .Values.pyWordCounter.ingress.host }}`)
       kind: Rule
       services:
-        - name: py-word-counter
+        - name: py-word-counter-svc
           port: 8000
 {{- end }}
