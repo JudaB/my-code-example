@@ -13,9 +13,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    repoURL:  https://judaB.github.io/my-code-example
     targetRevision: HEAD
-    path: guestbook
+    path: charts/ramapi
   syncPolicy:
     automated:
       prune: true
@@ -23,5 +23,4 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: guestbook
-helm repo add judab 
 
