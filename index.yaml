@@ -3,6 +3,16 @@ entries:
   ramapi:
   - apiVersion: v2
     appVersion: 1.16.1
+    created: "2024-03-13T12:56:45.97605857Z"
+    description: A Helm chart for Kubernetes
+    digest: 81d9bab9d7c5830a9236a6a8a69f8a7b49bec3d1fdf426e0384c636068e62cc3
+    name: ramapi
+    type: application
+    urls:
+    - https://github.com/JudaB/my-code-example/releases/download/ramapi-0.1.22/ramapi-0.1.22.tgz
+    version: 0.1.22
+  - apiVersion: v2
+    appVersion: 1.16.1
     created: "2024-03-13T11:47:20.978022612Z"
     description: A Helm chart for Kubernetes
     digest: 832293ad6176626d3af20c482935da92f6765e90540db13840feee717c94d4f4
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://github.com/JudaB/my-code-example/releases/download/ramapi-0.1.2/ramapi-0.1.2.tgz
     version: 0.1.2
-generated: "2024-03-13T11:47:20.978031459Z"
+generated: "2024-03-13T12:56:45.976075001Z"
