@@ -50,4 +50,6 @@ cd my-code-example/demo
 ./install.sh
 ```
 once you the installation finsh you can send the following query
+```
 curl http://py-word-counter.local:8082/most_common_words/2
+```
