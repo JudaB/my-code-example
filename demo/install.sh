@@ -86,6 +86,7 @@ check_docker_ps_access() {
         echo "Error: You must have access to 'docker ps' in order to work properly."
         echo "please execute sudo usermod -aG docker $USER "
         echo "if this is the first time you install with the script please logoff and login and start the installation again"
+        exit 1 
     fi
 }
 
@@ -109,6 +110,7 @@ install_argocd() {
 
 # main
 install_or_update_binaries
+check_docker_ps_access
 create_k3d_cluster
 install_argocd
 # wait for al deployments to be in Ready state
