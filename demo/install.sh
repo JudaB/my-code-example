@@ -120,7 +120,8 @@ else
 fi
 
 echo "Please execute the following command"
-echo curl http://${MYHOST}/most_common_words/2
+echo curl http://${MYHOST}:8082/most_common_words/2
+
 exit 0
 
 

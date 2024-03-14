@@ -3,7 +3,7 @@
 ## Description
 
 This repository contains the home assignment "py-word-counter" 
-it utilize to show practical understanding for the following concerpts python, kubernets,helm, bash, gitops, argo
+it utilize to show practical understanding for the following concerpts python, kubernets,helm, ingress, bash script, gitops, argo,CICD
 
 The assignment goal is to use Python code inside Docker that will run as a REST API and return the most common words in txt files. During the development process, I utilized k3d to set up a Kubernetes cluster. In order to adopt a GitOps approach, I added ArgoCD to deploy the application chart in the Kubernetes cluster.
 
