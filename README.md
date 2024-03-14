@@ -3,7 +3,7 @@
 ## Description
 
 This repository contains the home assignment "py-word-counter" 
-it utilize to show practical understanding for the following concerpts python, kubernets,helm, ingress, bash script, gitops, argo,CICD
+it utilize to show practical understanding for the following concerpts python, kubernets,helm, bash, gitops, argo
 
 The assignment goal is to use Python code inside Docker that will run as a REST API and return the most common words in txt files. During the development process, I utilized k3d to set up a Kubernetes cluster. In order to adopt a GitOps approach, I added ArgoCD to deploy the application chart in the Kubernetes cluster.
 
@@ -36,7 +36,9 @@ curl http://py-word-counter.local:8082/health-check
 and ingress as well
 
 ## Requirements
-You will need linux with docker 
+You will need linux with docker yq k3d , the script take care of the installation tested with 
+Amazon Image AMI ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240207.1) 
+
 
 ## Instructions
 
@@ -45,5 +47,5 @@ git clone https://github.com/JudaB/my-code-example.git
 cd my-code-example/demo
 ./install.sh
 ```
-
-once you installation finished you can execute curl
+once you the installation finsh you can send the following query
+curl http://py-word-counter.local:8082/most_common_words/2
