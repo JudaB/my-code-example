@@ -54,6 +54,7 @@ create_k3d_cluster() {
         return 0
     else
         echo "Failed to create k3d cluster 'mycluster'."
+        
         exit 1
     fi
 }
@@ -77,6 +78,17 @@ wait_for_deployments() {
         kubectl wait --for=condition=available deployment/"$deployment" --timeout=300s -n "$NAMESPACE"
     done
 }
+
+check_docker_ps_access() {
+    if docker ps &>/dev/null; then
+        echo "You have access to 'docker ps'."
+    else
+        echo "Error: You must have access to 'docker ps' in order to work properly."
+        echo "please execute sudo usermod -aG docker $USER "
+        echo "if this is the first time you install with the script please logoff and login and start the installation again"
+    fi
+}
+
 
 
 install_argocd() {

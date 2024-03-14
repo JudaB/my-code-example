@@ -36,7 +36,8 @@ curl http://py-word-counter.local:8082/health-check
 and ingress as well
 
 ## Requirements
-You will need linux with docker yq k3d , the script take care of the installation tested with 
+You will need linux with docker yq k3d ,  your user must have permission  to docker ps
+if you use ubuntu AWS image the script will take care for everything
 Amazon Image AMI ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240207.1) 
 
 
