@@ -28,7 +28,7 @@ install_or_update_binaries() {
                 "yq")
                     sudo wget https://github.com/mikefarah/yq/releases/download/v4.13.2/yq_linux_amd64 -O /usr/local/bin/yq
                     sudo chmod +x /usr/local/bin/yq
-                    ;;;
+                    ;;
                 *)
                     echo "Unknown binary: $binary"
                     ;;
