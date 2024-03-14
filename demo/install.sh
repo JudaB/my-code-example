@@ -2,7 +2,7 @@
 
 # Make sure you have Docker
 install_or_update_binaries() {
-    local binaries=("kubectl" "helm" "k3d")
+    local binaries=("kubectl" "helm" "k3d","yq")
     for binary in "${binaries[@]}"; do
         if ! command -v "$binary" &> /dev/null; then
             echo "$binary is not installed. Installing..."
@@ -25,6 +25,10 @@ install_or_update_binaries() {
                     sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
                     sudo chmod +x /usr/local/bin/argocd
                     ;;
+                "yq")
+                    sudo wget https://github.com/mikefarah/yq/releases/download/v4.13.2/yq_linux_amd64 -O /usr/local/bin/yq
+                    sudo chmod +x /usr/local/bin/yq
+                    ;;;
                 *)
                     echo "Unknown binary: $binary"
                     ;;
@@ -44,7 +48,7 @@ create_k3d_cluster() {
         return 0
     else
         echo "Failed to create k3d cluster 'mycluster'."
-        return 1
+        exit 1
     fi
 }
 
@@ -80,14 +84,14 @@ install_argocd() {
         return 0
     else
         echo "Failed to install Argo CD."
-        return 1
+        exit 1 
     fi
 }
 
 
+# main
 install_or_update_binaries
 create_k3d_cluster
-set -x
 install_argocd
 # wait for al deployments to be in Ready state
 sleep 5
@@ -98,17 +102,20 @@ kubectl apply -f application-ramapi.yaml -n argocd
 sleep 5
 wait_for_deployments demo
 
-#echo "127.0.0.1 py-word-counter.local" | sudo tee -a /etc/hosts
+MYHOST=$( yq -e '.pyWordCounter.ingress.host' ../charts/ramapi/values.yaml )
 
+# Check if the host exists in /etc/hosts
+if grep -q "${MYHOST}" /etc/hosts; then
+    echo "${MYHOST} host already exists in /etc/hosts"
+else
+    # Add host to /etc/hosts
+    echo "127.0.0.1 ${MYHOST}" | sudo tee -a /etc/hosts > /dev/null
+    echo "Added ${MYHOST} to /etc/hosts"
+fi
 
-#kubectl port-forward svc/argocd-server -n argocd 8080:443
-#kubectl get secret argocd-initial-admin-secret -n argocd -o json | jq -r '.data.password'  | base64 -d
-#kubectl config set-context --current --namespace=argocd
-#argocd login localhost:8080 --insecure
-#kubectl create guestbook
-#argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://localhost:8080 --dest-namespace defaul
-#argocd app sync guestbook
+echo "Please execute the following command"
+echo curl http://${MYHOST}/most_common_words/2
+exit 0
 
-kubectl apply -f application-ramapi.yaml -n argocd
 
 
