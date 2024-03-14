@@ -2,7 +2,7 @@
 
 # Make sure you have Docker
 install_or_update_binaries() {
-    local binaries=("kubectl" "helm" "k3d" "yq")
+    local binaries=("kubectl" "helm" "k3d" "yq" "docker")
     for binary in "${binaries[@]}"; do
         if ! command -v "$binary" &> /dev/null; then
             echo "$binary is not installed. Installing..."
@@ -29,6 +29,12 @@ install_or_update_binaries() {
                     sudo wget https://github.com/mikefarah/yq/releases/download/v4.13.2/yq_linux_amd64 -O /usr/local/bin/yq
                     sudo chmod +x /usr/local/bin/yq
                     ;;
+                "docker")
+                    curl -fsSL https://get.docker.com -o get-docker.sh
+                    sudo chmod +x get-docker.sh
+                    sudo sh ./get-docker.sh
+                    sudo usermod -aG docker $USER
+                    ;;                    
                 *)
                     echo "Unknown binary: $binary"
                     ;;
