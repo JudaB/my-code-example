@@ -34,7 +34,11 @@ i added health check for the kubernetes
 curl http://py-word-counter.local:8082/health-check
 {"status":"OK"}judab@DESKTOP-FF34JD6:~/git/my-code-example/demo$
 ```
-and ingress as well
+
+at the end of the task while writing the README, i did some QA
+verify the code is working on plain ubuntu AMI Image, and on WSL ubuntu
+
+i added ingress and update the script to update hosts file to access the ingres
 
 ## Requirements
 You will need linux with docker yq k3d ,  your user must have permission  to docker ps
