@@ -2,7 +2,7 @@
 
 # Make sure you have Docker
 install_or_update_binaries() {
-    local binaries=("kubectl" "helm" "k3d","yq")
+    local binaries=("kubectl" "helm" "k3d" "yq")
     for binary in "${binaries[@]}"; do
         if ! command -v "$binary" &> /dev/null; then
             echo "$binary is not installed. Installing..."
@@ -102,7 +102,7 @@ kubectl apply -f application-ramapi.yaml -n argocd
 sleep 5
 wait_for_deployments demo
 
-MYHOST=$( yq -e '.pyWordCounter.ingress.host' ../charts/ramapi/values.yaml )
+MYHOST=$( yq e '.pyWordCounter.ingress.host' ../charts/ramapi/values.yaml )
 
 # Check if the host exists in /etc/hosts
 if grep -q "${MYHOST}" /etc/hosts; then
