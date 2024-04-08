@@ -1,12 +1,6 @@
 #!/bin/bash
-
-
 # Before run this script on the host in order to have the Jenkins Container
 # Make sure to edit docker daemon and enable docker api on port 2375
-#
-
-
-
 #
 docker run   --name jenkins-blueocean   \
 	--restart=on-failure   \
@@ -20,4 +14,3 @@ docker run   --name jenkins-blueocean   \
 	--publish 50000:50000   \
 	--volume jenkins-data:/var/jenkins_home   \
 	myjenkins-blueocean:2.401.2-1
-

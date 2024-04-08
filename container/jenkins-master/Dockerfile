@@ -1,13 +1,4 @@
-FROM jenkins/jenkins:lts-jdk11
-USER root
-RUN apt-get update && apt-get install -y lsb-release
-RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
-  https://download.docker.com/linux/debian/gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) \
-  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
-  https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-RUN apt-get update && apt-get install -y docker-ce-cli
+FROM jenkins/jenkins:lts
 USER jenkins
-RUN jenkins-plugin-cli --plugins "blueocean docker-workflow amazon-ecs docker-plugin artifactory emailext kubernetes workflow-aggregator git configuration-as-code"
-
+RUN jenkins-plugin-cli --plugins kubernetes workflow-aggregator git configuration-as-code blueocean docker-workflow amazon-ecs docker-plugin artifactory  kubernetes workflow-aggregator git configuration-as-code 
+RUN jenkins-plugin-cli --plugins ant cloudbees-bitbucket-branch-source build-timeout nodejs pipeline-aws remote-file sonar
