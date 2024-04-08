@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on:
+  push:
+    paths:
+      - container/jenkins-master/**
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        
+    - name: Build the Docker image
+      run: |
+        set -x
+        TAG=$(date +"%y%m%d-%H.%M")
+        cd container/jenkins-master
+        docker build . --file ./Dockerfile --tag judab/jenkins-master:${TAG}
+        docker push judab/jenkins-master:${TAG}
