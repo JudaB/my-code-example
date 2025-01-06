@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
+      context: ./backend-rampi
     container_name: backend
     networks:
       - internal_network
@@ -23,7 +23,7 @@ services:
     ports:
       - "3000:3000" # Expose frontend on host
     environment:
-      - REACT_APP_BACKEND_URL=http://backend:5000/ram # Updated Backend URL
+      - REACT_APP_BACKEND_URL=http://localhost:5000/ram # Updated Backend URL
 
 networks:
   bridged_network:
